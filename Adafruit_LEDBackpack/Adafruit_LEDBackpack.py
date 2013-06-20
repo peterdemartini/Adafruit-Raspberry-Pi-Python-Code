@@ -1,14 +1,15 @@
 #!/usr/bin/python
+# Updated to support the Adafruit_GFX library
 
-import time
 from copy import copy
 from Adafruit_I2C import Adafruit_I2C
+from Adafruit_GFX import Adafruit_GFX
 
 # ============================================================================
 # LEDBackpack Class
 # ============================================================================
 
-class LEDBackpack:
+class LEDBackpack(Adafruit_GFX):
   i2c = None
 
   # Registers
@@ -27,7 +28,8 @@ class LEDBackpack:
               0x0000, 0x0000, 0x0000, 0x0000 ]
 
   # Constructor
-  def __init__(self, address=0x70, debug=False):
+  def __init__(self, w, h, address=0x70, debug=False):
+    Adafruit_GFX.__init__(self, w, h)
     self.i2c = Adafruit_I2C(address)
     self.address = address
     self.debug = debug
@@ -83,5 +85,5 @@ class LEDBackpack:
     if (update):
       self.writeDisplay()
 
-led = LEDBackpack(0x70)
+led = LEDBackpack(8,8,0x70)
 
