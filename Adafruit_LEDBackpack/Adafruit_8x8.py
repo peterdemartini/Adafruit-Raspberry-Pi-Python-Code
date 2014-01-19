@@ -98,3 +98,33 @@ class ColorEightByEight(EightByEight):
       self.disp.setBufferRow(y, buffer[y] | (1 << (x+8)) | (1 << x) )
     else:
       self.disp.setBufferRow(y, buffer[y] & ~(1 << x) & ~(1 << (x+8)) )
+  def drawPixel(self, x, y, color=1):
+    #"Sets a single pixel"
+    if ((y < 0) or (y >= 8)):
+      return
+    if ((x < 0) or (x >= 8)):
+      return    
+      
+    # Added rotation code 4/16/13 - RH
+    if self.rotation == 1:
+      x, y = self.swap(x, y)
+      x = 8 - x - 1
+    elif self.rotation == 2:
+      x = 8 - x - 1
+      y = 8 - y - 1
+    elif self.rotation == 3:
+      x, y = self.swap(x, y)
+      y = 8 - y - 1
+
+    x += 7   # ATTN: This might be a bug?  On the color matrix, this causes x=0 to draw on the last line instead of the first.
+    x %= 8
+    # Set the appropriate pixel
+    buffer = self.getBuffer()
+    if (color == 1):
+      self.setBufferRow(y, (buffer[y] | (1 << x)) & ~(1 << (x+8)) )
+    elif (color == 2):
+      self.setBufferRow(y, (buffer[y] | 1 << (x+8)) & ~(1 << x) )
+    elif (color == 3):
+      self.setBufferRow(y, buffer[y] | (1 << (x+8)) | (1 << x) )
+    else:
+      self.setBufferRow(y, buffer[y] & ~(1 << x) & ~(1 << (x+8)) )
